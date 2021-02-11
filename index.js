@@ -1,10 +1,13 @@
 const express = require('express')
 const expressEjsLayouts = require('express-ejs-layouts')
-const app = express()
+const db =require('../models')
+
 const ejs = require('ejs')
 const axios = require('axios')
 const morgan = require('morgan')
 
+
+const app = express()
 //static files// allows app to easily find filders and files
 app.use(express.static('public'))
 
@@ -15,18 +18,22 @@ app.set('view engine', 'ejs')
 
 //route
 app.get('/', (req, res) => {
-    const artUrl = 'https://collectionapi.metmuseum.org/public/collection/v1/objects'
+    const artUrl = 'https://www.rijksmuseum.nl/api/nl/collection/SK-C-5/tiles?key=JMAXiERl'
+    //'/api/en/collection/4/tiles'
+    
     axios.get(artUrl).then(function(apiResponse) {
-        const art = apiResponse.data.results;
-        res.render('index', { art: art })
-        
+        const art = apiResponse
+        console.log("**********************************************")
+        console.log(art.levels[0].tiles[0].url)
+        res.render('index')
+        d
     })
 })
 
-app.get('/favorites', async(req, res) => {
-        res.send('./favorites')
+// app.get('/favorites', (req, res) => {
+//         res.send('./favorites')
         
-    })
+//     })
 
 
 
