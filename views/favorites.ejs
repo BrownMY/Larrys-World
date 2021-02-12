@@ -1,5 +1,6 @@
-<h1>Favorites</h1>
-
 <p>Your virtual collection</p>
 
-<img src= <%= art %>>
+<% artFaveResponse.forEach(artFave => { %>
+<img src="<%= artFave.url %>">
+<%= artFave.title %>
+<% }) %>

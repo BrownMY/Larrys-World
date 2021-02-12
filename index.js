@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
-const expressEjsLayouts = require('express-ejs-layouts')
-const db =require('./models')
+const ejsLayouts = require('express-ejs-layouts')
+const db = require('./models')
 const axios = require('axios')
 const morgan = require('morgan')
 
@@ -12,36 +12,46 @@ const app = express()
 app.use(express.static('public'))
 
 //Templating engine
-app.use(express.urlencoded({ extended: false}))
+app.use(express.urlencoded({ extended: false }))
 //not sure what this even does
+app.use(ejsLayouts)
 
 app.set('view engine', 'ejs')
 
 //route
 app.get('/', (req, res) => {
     const API_key = process.env.API_key
-    //const artUrl = `https://www.rijksmuseum.nl/api/en/collection/SK-C-5?key=${API_key}&f.dating.period=21`
     const artUrl = `https://www.rijksmuseum.nl/api/en/collection/?key=${API_key}`
-    //'/api/en/collection/4/tiles' having trouble accessing photos
-    axios.get(artUrl).then(function(apiResponse) {
+  
+    axios.get(artUrl).then(function (apiResponse) {
         const artData = apiResponse.data.artObjects
-        const artImage = apiResponse.data.artObject[0].webImage.url
+        //const artImage = apiResponse.data.artObjects[0].webImage.url
         console.log("**********************************************")
-        console.log(artData)
-        console.log(artImage)
-        res.render('index', { image })
-       //db.painting.create ??
+        res.render('index', { artData })
+        //db.painting.create ??
     })
-    .catch(error => {
-        console.log(`Uh-oh. There's an error here.`)
-        console.log(error)
-    })
+        .catch(error => {
+            console.log(`Uh-oh. There's an error here.`)
+            console.log(error)
+        })
 })
 
-// app.get('/favorites', (req, res) => {
-//         res.send('./favorites')
-        
-//     })
+app.get('/favorites', (req, res) => {
+        db.artFave.findAll().then(function(artFaveResponse) {
+        console.log(db.artFave)
+        res.render('favorites', { artFaveResponse })
+        })
+
+    })
+
+app.post('/favorites', (req, res) => {
+    db.artFave.create({
+        title: req.body.title,
+        url: req.body.url
+    }).then(function(title) {
+        res.redirect('/favorites')
+    })
+})
 
 
 

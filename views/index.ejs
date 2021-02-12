@@ -1,3 +1,13 @@
+<% for( i=0; i < artData.length; i ++) { %>
+    <img src=<%= artData[i].webImage.url %>>
+    <p> <%= artData[i].longTitle %> </p>
+   
+    <div>
+        <form method="POST" action="/favorites">
+            <input hidden type="text" name="title" value="<%= artData[i].longTitle %>">
+            <input hidden type="text" name="url" value="<%= artData[i].webImage.url %>">
+            <button type="submit">Virtual Collection</button>
+        </form>
 
-<img src= <%= artImage.url %>>
-
+    </div>
+  <% } %>
